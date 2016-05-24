@@ -14,15 +14,34 @@ class App extends Component {
         console.log('app component');
 
         this.state = {
-            todos: {}
+            todoInputVal: '',
+            todos: []
         }
     }
 
     addToDo( todo ) {
-        console.log('new to do: ', todo.nativeEvent.text, todo.nativeEvent.text.length);
+        let todoTemp = todo.nativeEvent.text;
+
+        if (todoTemp.length > 0) {
+            let todoArray = this.state.todos;
+            todoArray.push(todoTemp);
+
+            this.setState({
+                todos: todoArray,
+                todoInputVal: ''
+            });
+        }
     }
 
     render() {
+        console.log('render app', this.state.todos);
+        let todos = this.state.todos.map( ( item, index ) => {
+            console.log(item, index);
+            return (
+                <Text style={ styles.todosItem } key={ index }>• { item }</Text>
+            )
+        });
+
         return (
             <View style={ styles.container }>
                 <Text style={ styles.title }>TO-DO List:</Text>
@@ -30,7 +49,12 @@ class App extends Component {
                     <TextInput
                         style={ styles.inputField }
                         onSubmitEditing={ event => this.addToDo(event) }
+                        value={ this.state.todoInputVal }
+                        onChangeText={ text => this.setState({ todoInputVal: text })}
                     />
+                </View>
+                <View style={ styles.todos }>
+                    { todos }
                 </View>
             </View>
         )
@@ -61,6 +85,15 @@ const styles = StyleSheet.create({
     },
     inputField: {
         height: 40
+    },
+    todos: {
+        position: 'absolute',
+        top: 100,
+        left: 0,
+        right: 0
+    },
+    todosItem: {
+        fontSize: 18
     }
 });
 
