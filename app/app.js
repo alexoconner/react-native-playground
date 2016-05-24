@@ -15,14 +15,17 @@ class App extends Component {
 
         this.state = {
             todoInputVal: '',
-            todos: []
+            todos: [
+                'Buy Milk',
+                'Shopping'
+            ]
         }
     }
 
     addToDo( todo ) {
         let todoTemp = todo.nativeEvent.text;
 
-        if (todoTemp.length > 0) {
+        if ( todoTemp.length > 0 ) {
             let todoArray = this.state.todos;
             todoArray.push(todoTemp);
 
@@ -33,12 +36,27 @@ class App extends Component {
         }
     }
 
+    removeToDo( todo ) {
+        let arrayTemp = this.state.todos;
+        let index = arrayTemp.indexOf(todo);
+
+        if ( index > -1 ) {
+            arrayTemp.splice( index, 1 );
+
+            this.setState({
+                todos: arrayTemp
+            });
+        }
+    }
+
     render() {
         console.log('render app', this.state.todos);
         let todos = this.state.todos.map( ( item, index ) => {
-            console.log(item, index);
             return (
-                <Text style={ styles.todosItem } key={ index }>• { item }</Text>
+                <View key={ index }>
+                    <Text style={ styles.todosItem }>• { item }</Text>
+                    <Text style={ styles.todosItemDelete } onPress={ () => this.removeToDo( item ) }>X</Text>
+                </View>
             )
         });
 
@@ -48,7 +66,7 @@ class App extends Component {
                 <View style={ styles.inputFieldWrapper }>
                     <TextInput
                         style={ styles.inputField }
-                        onSubmitEditing={ event => this.addToDo(event) }
+                        onSubmitEditing={ event => this.addToDo( event ) }
                         value={ this.state.todoInputVal }
                         onChangeText={ text => this.setState({ todoInputVal: text })}
                     />
@@ -93,7 +111,15 @@ const styles = StyleSheet.create({
         right: 0
     },
     todosItem: {
-        fontSize: 18
+        fontSize: 26,
+        lineHeight: 36
+    },
+    todosItemDelete: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        fontSize: 26,
+        lineHeight: 36
     }
 });
 
